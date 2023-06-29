@@ -1,4 +1,4 @@
-// Copyright 2018 Google LLC
+// Copyright 2018 mkm75 -- Original by Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+chrome.runtime.onInstalled.addListener(() => {
+  console.log("installed");
+  chrome.contextMenus.create({
+    id: 'pip',
+    title: 'Picture in picture'
+  });
+});
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.checked) return;
+  if (info.menuItemId !== 'pip') return;
+  chrome.tabs.sendMessage(tab.id, "resetClickedEl", {frameId: info.frameId}, () => {
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id, allFrames: true },
+      world: "MAIN",
+      files: ["script.js"]
+    });
+  })
+})
+
 chrome.action.onClicked.addListener((tab) => {
   chrome.storage.sync.get({ optOutAnalytics: false }, (results) => {
     const files = results.optOutAnalytics
@@ -20,7 +39,7 @@ chrome.action.onClicked.addListener((tab) => {
     chrome.scripting.executeScript({
       target: { tabId: tab.id, allFrames: true },
       world: "MAIN",
-      files,
+      files
     });
   });
 });

@@ -51,7 +51,12 @@ function maybeUpdatePictureInPictureVideo(entries, observer) {
   }
 }
 
-(async () => {
+async function doPIP(video) {
+  if (video.hasAttribute('__pip__'))
+    return;
+  await requestPictureInPicture(video);
+}
+async function doPIPOrig() {
   const video = findLargestPlayingVideo();
   if (!video) {
     return;
@@ -62,6 +67,14 @@ function maybeUpdatePictureInPictureVideo(entries, observer) {
   }
   await requestPictureInPicture(video);
   _gaq.push(['_trackPageview', '/']);
+}
+
+(async () => {
+  var element = document.getElementsByClassName('clp\\pip-target')[0];
+  if (element != null && element.constructor.name === 'HTMLVideoElement')
+    doPIP(element);
+  else
+    doPIPOrig();
 })();
 
 var _gaq = _gaq || [];

@@ -1,13 +1,21 @@
 {
-  "name": "Picture-in-Picture Extension (by Google)",
-  "description": "Watch video using Picture-in-Picture",
-  "version": "1.11",
+  "name": "Chrome Legacy PiP (by mkm75)",
+  "description": "forked from Picture-in-Picture Extension, modified to add ability to call PiP from context menu.",
+  "version": "1.0",
   "icons": {
     "128": "assets/icon128.png"
   },
   "background": {
     "service_worker": "background.js"
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "all_frames": true,
+      "match_about_blank": true
+    }
+  ],
   "action": {
     "default_icon": {
       "19": "assets/icon19.png",
@@ -30,7 +38,9 @@
   },
   "permissions": [
     "scripting",
-    "storage"
+    "storage",
+    "activeTab",
+    "contextMenus"
   ],
   "host_permissions": [
     "<all_urls>"
